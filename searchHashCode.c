@@ -11,9 +11,6 @@
 #define CAPACITY 5923 // Size of the Hash Table
 
 unsigned long hash_function(int x) {
-    //x = ((x >> 16) ^ x) * 0x45d9f3b;
-	//x = ((x >> 16) ^ x) * 0x45d9f3b;
-	//x = (x >> 16) ^ x;
 	return (x*60)%CAPACITY;
 }
 
@@ -81,7 +78,7 @@ int main(){
     	dstid = *(arrayP+1);
     	hod = *(arrayP+2);
 
-	if(sourceid==-1) break;
+		if(sourceid==-1) break;
 
     	//Buscamos en posiciones, la posición donde se encuentra el primer viaje con ese sourceid 
     	fseek(posiciones, (hash_function(sourceid))*sizeof(Data), SEEK_SET);

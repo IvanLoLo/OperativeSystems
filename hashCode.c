@@ -14,9 +14,6 @@
 #define CAPACITY 5923 // Size of the Hash Table
 
 unsigned long hash_function(int x) {
-    //x = ((x >> 16) ^ x) * 0x45d9f3b;
-	//x = ((x >> 16) ^ x) * 0x45d9f3b;
-	//x = (x >> 16) ^ x;
 	return (x*60)%CAPACITY;
 }
 
@@ -251,17 +248,6 @@ void free_hashtable(HashTable* table) {
 int main(){
 
     HashTable* ht = create_table(CAPACITY);
-    Travel travel = {.sourceid=133, .dstid=100, .hod=16, .meantime=5};
-    Travel travel2 = {.sourceid=133, .dstid=110, .hod=17, .meantime=5};
-    Travel travel3 = {.sourceid=133, .dstid=56, .hod=18, .meantime=5};
-    ht_insert(ht, 133, travel);
-    print_hashtable(ht);
-    ht_insert(ht, 133, travel2);
-    print_hashtable(ht);
-    ht_insert(ht, 133, travel3);
-    print_hashtable(ht);
-    printf("\n\n");
-    print_search(ht, 133, 56, 18);
     
     int source, dst, hod;
     float time;
@@ -271,7 +257,7 @@ int main(){
 
     FILE *file;
     Travel tmp;
-    file = fopen("6M.csv", "rb");
+    file = fopen("bogota-cadastral-2020-1-All-HourlyAggregate.csv", "rb");
     int i = 0;
     while(!feof(file)){
         if(fgetc(file) == '\n') break;
@@ -279,6 +265,8 @@ int main(){
     }
     rewind(file);
     fseek(file, i, SEEK_SET);
+
+    //lee el archivo y guarda los elementos en la hashtable
     while(!feof(file)){
         fscanf(file,"%d,%d,%d,%f,%s", &source, &dst, &hod, &time, rest);
         tmp = (Travel) {.sourceid = source, .dstid = dst, .hod = hod, .meantime = time};
@@ -290,7 +278,6 @@ int main(){
 
     double armar_tabla = ((double)(t1-t0)/CLOCKS_PER_SEC);
 
-    //print_hashtable(ht);
     t0 = clock();
 
     Info info;
@@ -298,10 +285,12 @@ int main(){
 
     FILE *viajes;
     FILE *posiciones;
-    viajes = fopen("viajes2.txt", "wb");
-    posiciones = fopen("posiciones2.txt", "wb");
+    viajes = fopen("viajes.txt", "wb");
+    posiciones = fopen("posiciones.txt", "wb");
     int angel = 1;
     int cont = 0;
+
+
     for(int i=0; i<ht->size; i++){
         info2 = (Data) {.id = -1, .pos = -1};
         if(ht->items[i]){
@@ -327,7 +316,6 @@ int main(){
             }
         }
         fwrite(&info2, sizeof(Data), 1, posiciones);
-        //if(info2.id > 0) printf("%d %d %d\n", i, info2.id, info2.pos);
     }
 
     rewind(viajes);
